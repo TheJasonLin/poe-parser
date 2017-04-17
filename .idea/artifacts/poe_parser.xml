@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="poe-parser">
+    <output-path>$PROJECT_DIR$/out/artifacts/poe_parser</output-path>
+    <root id="archive" name="poe-parser.jar">
+      <element id="module-output" name="poe-parser" />
+      <element id="library" level="project" name="poe-constants1" />
+    </root>
+  </artifact>
+</component>
