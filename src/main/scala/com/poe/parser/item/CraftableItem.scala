@@ -9,14 +9,14 @@ abstract class CraftableItem(
   val identified: Boolean = knownInfo.identified.get
   val quality: Option[Int] = knownInfo.quality
 
-  def parseMods(modStrings: Set[String]): Set[Mod] = {
+  def parseMods(modStrings: Seq[String]): Seq[Mod] = {
     modStrings.map((modString: String) => {
       Mod.parse(modString)
     })
   }
 
-  val implicits: Set[Mod] = if(knownInfo.implicits.isDefined) parseMods(knownInfo.implicits.get) else Set.empty[Mod]
-  val explicits: Set[Mod] = if(knownInfo.explicits.isDefined) parseMods(knownInfo.explicits.get) else Set.empty[Mod]
+  val implicits: Seq[Mod] = if(knownInfo.implicits.isDefined) parseMods(knownInfo.implicits.get) else Seq.empty[Mod]
+  val explicits: Seq[Mod] = if(knownInfo.explicits.isDefined) parseMods(knownInfo.explicits.get) else Seq.empty[Mod]
 
   override def toString: String = super.toString() + s"[ilvl: $itemLevel, id: $identified, quality: $quality]"
 }

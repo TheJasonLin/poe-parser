@@ -7,6 +7,7 @@ import com.poe.parser.item.equipment.EquipmentFactory
 
 object ItemFactory {
   def create(knownInfo: KnownInfo): Item = {
+    implicit
     val baseWords = knownInfo.base.split(' ')
     if (knownInfo.rarity == Rarity.GEM && knownInfo.quality.isDefined) {
       return new Gem(knownInfo)

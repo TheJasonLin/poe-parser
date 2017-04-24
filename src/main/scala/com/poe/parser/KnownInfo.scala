@@ -15,6 +15,6 @@ class KnownInfo (var base: String, var rarity: Rarity) {
   var quality: Option[Int] = None
   var mapTier: Option[Int] = None
   var talismanTier: Option[Int] = None
-  var implicits: Option[Set[String]] = None
-  var explicits: Option[Set[String]] = None
+  var implicits: Option[Seq[String]] = None
+  var explicits: Option[Seq[String]] = None
 }

@@ -10,8 +10,11 @@ abstract class Item(knownInfo: KnownInfo) {
 
   def width(): Int = 1
   def height(): Int = 1
+  def className: String = this.getClass.getSimpleName
 
   override def toString: String = getClass + s"($base, $name, $rarity, $width(), $height())"
+
+  def asDBItem: DBItem = DBItem(className, rarity.key, base)
 }
 
 object Item {

@@ -5,10 +5,8 @@ import com.poe.parser.item.Item
 import com.poe.parser.item.equipment.accessory.Ring
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.collection.immutable.HashSet
-
 class ItemFactorySpec extends FlatSpec with Matchers {
-  "AcessoryFactory" should "create a ring" in {
+  "ItemFactory" should "create a ring" in {
     val ringInfo: KnownInfo = getGhoulTurnInfo
 
     val item: Item = ItemFactory.create(ringInfo)
@@ -26,12 +24,12 @@ class ItemFactorySpec extends FlatSpec with Matchers {
     ringInfo.itemLevel = Option(77)
     ringInfo.identified = Option(true)
     ringInfo.implicits = Option(
-      HashSet(
+      List(
         "29% increased Global Critical Strike Chance"
       )
     )
     ringInfo.explicits = Option(
-      HashSet(
+      List(
         "Adds 3 to 40 Lightning Damage to Attacks",
         "+390 to Accuracy Rating",
         "+22 to maximum Energy Shield",
