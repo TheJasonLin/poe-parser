@@ -5,7 +5,7 @@ import com.poe.parser.KnownInfo
 class Claw(
             knownInfo: KnownInfo
           ) extends Weapon(knownInfo) {
-override def height(): Int = 2
+  override def height(): Int = 2
 
   override def width(): Int = 2
 }

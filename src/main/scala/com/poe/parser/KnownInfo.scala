@@ -9,6 +9,7 @@ import com.poe.constants.Rarity
   * and generating the appropriate meta data
   */
 class KnownInfo (var base: String, var rarity: Rarity) {
+  var id: Option[String] = None
   var name: Option[String] = None
   var itemLevel: Option[Int] = None
   var identified: Option[Boolean] = None
@@ -17,4 +18,8 @@ class KnownInfo (var base: String, var rarity: Rarity) {
   var talismanTier: Option[Int] = None
   var implicits: Option[Seq[String]] = None
   var explicits: Option[Seq[String]] = None
+  var accountName: Option[String] = None
+  var lastCharacterName: Option[String] = None
+  var note: Option[String] = None
+  var stashName: Option[String] = None
 }

@@ -1,6 +1,7 @@
 package com.poe.parser.item.equipment.weapon
 
 import com.poe.parser.KnownInfo
+import com.poe.parser.item.DBItem
 
 class Sword(
              knownInfo: KnownInfo,
@@ -9,6 +10,12 @@ class Sword(
            ) extends VariableWeapon(knownInfo, oneHanded) {
   override def height(): Int = if (thrusting) 4 else super.width()
   override def width(): Int = if (thrusting) 1 else super.width()
+
+  override def asDBItem: DBItem = {
+    super.asDBItem.copy(
+      thrusting = Option(thrusting)
+    )
+  }
 }
 
 object Sword {

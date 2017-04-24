@@ -1,8 +1,8 @@
 package com.poe.parser.item
 
-class Mod(val text: String, val values: Seq[Int]) {
-  val averageValue: Int = values.sum / values.length
-}
+import scala.util.Try
+
+case class Mod(text: String, values: Seq[Int])
 
 object Mod {
   def parse(modString: String): Mod = {
@@ -16,9 +16,11 @@ object Mod {
       .split(" ")
       .toSeq
       .map((valueString: String) => {
-        valueString.toInt
+        Try(valueString.toInt)
       })
+      .filter(_.isSuccess)
+      .map(_.get)
 
-    new Mod(text, values)
+    Mod(text, values)
   }
 }
