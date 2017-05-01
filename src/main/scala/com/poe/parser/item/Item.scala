@@ -4,6 +4,9 @@ import com.poe.constants.Rarity
 import com.poe.parser.KnownInfo
 
 abstract class Item(knownInfo: KnownInfo) {
+  if (knownInfo != null) {
+
+  }
   val rarity: Rarity = knownInfo.rarity
   val base: String = knownInfo.base
   val name: Option[String] = knownInfo.name
@@ -18,7 +21,7 @@ abstract class Item(knownInfo: KnownInfo) {
   def asDBItem: DBItem = {
     if(id.isEmpty) throw new IllegalArgumentException("id (from GGG) must be defined to create DB Object")
     DBItem(
-      id.get, className, rarity.key, base, width(), height(),
+      id.get, className, rarity.key, base, name, width(), height(),
       // Options
       knownInfo.accountName, knownInfo.lastCharacterName, knownInfo.note, knownInfo.stashName
     )

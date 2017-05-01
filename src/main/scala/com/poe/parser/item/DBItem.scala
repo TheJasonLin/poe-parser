@@ -1,5 +1,7 @@
 package com.poe.parser.item
 
+import com.poe.constants.Rarity
+import com.poe.parser.KnownInfo
 import org.mongodb.scala.bson.ObjectId
 
 case class DBItem(
@@ -7,6 +9,7 @@ case class DBItem(
                    className: String,
                    rarity: Int,
                    base: String,
+                   name: Option[String],
                    width: Int,
                    height: Int,
                    // GGG Source Only
