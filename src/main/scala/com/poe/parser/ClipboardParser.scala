@@ -51,11 +51,11 @@ object ClipboardParser {
 
   private def parseTypeLine(clipboard: String): String = {
     val lines: Array[String] = clipboard.split('\n')
-    var baseLineIndex = 1
+    var typeLineIndex = 1
     if (hasName(clipboard)) {
-      baseLineIndex = 2
+      typeLineIndex = 2
     }
-    lines(baseLineIndex)
+    lines(typeLineIndex)
   }
 
   private def parseName(clipboard: String): Option[String] = {

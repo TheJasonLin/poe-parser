@@ -5,7 +5,6 @@ import com.poe.parser.KnownInfo
 abstract class CraftableItem(
                               knownInfo: KnownInfo
                             ) extends Item(knownInfo) {
-  val itemLevel: Int = knownInfo.itemLevel.get
   val identified: Boolean = knownInfo.identified.get
   val quality: Option[Int] = knownInfo.quality
 

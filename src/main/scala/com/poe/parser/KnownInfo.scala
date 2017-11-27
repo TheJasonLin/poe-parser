@@ -20,6 +20,8 @@ class KnownInfo (var typeLine: String, var rarity: Rarity) {
   var implicits: Option[Seq[String]] = None
   var explicits: Option[Seq[String]] = None
   var ownerInfo: Option[OwnerInfo] = None
+  var positionX: Option[Int] = None
+  var positionY: Option[Int] = None
 
   def isMap: Boolean = {
     typeLine.contains("Map")

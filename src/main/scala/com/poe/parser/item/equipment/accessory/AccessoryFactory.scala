@@ -4,16 +4,16 @@ import com.poe.parser.KnownInfo
 
 object AccessoryFactory {
   def create(knownInfo: KnownInfo): Option[Accessory] = {
-    val baseWords: Seq[String] = knownInfo.typeLine.split(' ')
-    if (baseWords.contains("Amulet")) {
+    val typeLineWords: Seq[String] = knownInfo.typeLine.split(' ')
+    if (typeLineWords.contains("Amulet")) {
       return Option(new Amulet(knownInfo))
-    } else if(baseWords.contains("Talisman")) {
+    } else if(typeLineWords.contains("Talisman")) {
       return Option(new Talisman(knownInfo))
-    } else if (baseWords.contains("Ring")) {
+    } else if (typeLineWords.contains("Ring")) {
       return Option(new Ring(knownInfo))
-    } else if (baseWords.contains("Belt") || baseWords.contains("Sash")) {
+    } else if (typeLineWords.contains("Belt") || typeLineWords.contains("Sash")) {
       return Option(new Belt(knownInfo))
-    } else if (baseWords.contains("Quiver")) {
+    } else if (typeLineWords.contains("Quiver")) {
       return Option(new Quiver(knownInfo))
     }
     None

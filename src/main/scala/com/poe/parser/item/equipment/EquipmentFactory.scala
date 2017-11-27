@@ -9,14 +9,13 @@ object EquipmentFactory {
   def create(knownInfo: KnownInfo): Option[Equipment] = {
     var equipmentOption: Option[Equipment] = None
 
-//    // Flask
-//    if(base.contains("Flask")) {
-//      return Option(new Flask(rarity, base, name, itemLevel, identified, quality))
-//    }
-//    // Jewel
-//    if(base.contains("Jewel")) {
-//      return Option(new Jewel(rarity, base, name, itemLevel, identified))
-//    }
+    if (knownInfo.typeLine.contains("Flask")) {
+      return Option(new Flask(knownInfo))
+    }
+
+    if (knownInfo.typeLine.contains("Jewel")) {
+      return Option(new Jewel(knownInfo))
+    }
 
     // Accessory
     equipmentOption = AccessoryFactory.create(knownInfo)
@@ -25,6 +24,7 @@ object EquipmentFactory {
     // Armour
     equipmentOption = ArmourFactory.create(knownInfo)
     if (equipmentOption.isDefined) return equipmentOption
+
     // Weapon
     equipmentOption = WeaponFactory.create(knownInfo)
     if(equipmentOption.isDefined) return equipmentOption

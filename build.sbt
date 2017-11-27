@@ -1,6 +1,6 @@
 name := "poe-parser"
 
-version := "1.0"
+version := "0.0.5"
 
 scalaVersion := "2.11.8"
 
