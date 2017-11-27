@@ -1,6 +1,7 @@
 package com.poe.parser
 
 import com.poe.constants.Rarity
+import com.poe.parser.item.OwnerInfo
 
 
 /**
@@ -18,8 +19,17 @@ class KnownInfo (var base: String, var rarity: Rarity) {
   var talismanTier: Option[Int] = None
   var implicits: Option[Seq[String]] = None
   var explicits: Option[Seq[String]] = None
-  var accountName: Option[String] = None
-  var lastCharacterName: Option[String] = None
-  var note: Option[String] = None
-  var stashName: Option[String] = None
+  var ownerInfo: Option[OwnerInfo] = None
+
+  def isMap: Boolean = {
+    base.contains("Map")
+  }
+
+  def isTalisman: Boolean = {
+    base.contains("Talisman")
+  }
+
+  def isLeaguestone: Boolean = {
+    base.contains("Leaguestone")
+  }
 }

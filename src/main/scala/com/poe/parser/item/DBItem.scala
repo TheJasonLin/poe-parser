@@ -13,10 +13,7 @@ case class DBItem(
                    width: Int,
                    height: Int,
                    // GGG Source Only
-                   accountName: Option[String] = None,
-                   lastCharacterName: Option[String] = None,
-                   note: Option[String] = None,
-                   stashName: Option[String] = None,
+                   dbOwnerInfo: Option[DBOwnerInfo] = None,
                    // Craftable Item
                    itemLevel: Option[Int] = None,
                    identified: Option[Boolean] = None,

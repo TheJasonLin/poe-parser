@@ -11,6 +11,7 @@ abstract class Item(knownInfo: KnownInfo) {
   val base: String = knownInfo.base
   val name: Option[String] = knownInfo.name
   val id: Option[String] = knownInfo.id
+  val ownerInfo: Option[OwnerInfo] = knownInfo.ownerInfo
 
   def width(): Int = 1
   def height(): Int = 1
@@ -20,11 +21,9 @@ abstract class Item(knownInfo: KnownInfo) {
 
   def asDBItem: DBItem = {
     if(id.isEmpty) throw new IllegalArgumentException("id (from GGG) must be defined to create DB Object")
-    DBItem(
-      id.get, className, rarity.key, base, name, width(), height(),
-      // Options
-      knownInfo.accountName, knownInfo.lastCharacterName, knownInfo.note, knownInfo.stashName
-    )
+
+    val dBOwnerInfo: Option[DBOwnerInfo] = if (ownerInfo.isDefined) Option(ownerInfo.get.asDBOwnerInfo) else None
+    DBItem(id.get, className, rarity.key, base, name, width(), height(), dBOwnerInfo)
   }
 }
 

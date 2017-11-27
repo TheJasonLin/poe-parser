@@ -1,7 +1,7 @@
 package com.poe.parser
 
 import com.poe.constants.Rarity
-import com.poe.parser.item.Item
+import com.poe.parser.item.{Item, OwnerInfo}
 import com.poe.parser.item.equipment.accessory.Ring
 import com.poe.parser.item.equipment.weapon.Dagger
 import org.scalatest.{FlatSpec, Matchers}
@@ -75,10 +75,7 @@ class ItemFactorySpec extends FlatSpec with Matchers {
         "43% increased Spell Damage"
       )
     )
-    info.accountName = Option("foxlin")
-    info.lastCharacterName = Option("SparkTrain")
-    info.note = Option("~b/o 30 chaos")
-    info.stashName = Option("$$")
+    info.ownerInfo = Option(new OwnerInfo("foxlin", "SparkTrain", "~b/o 30 chaos", "$$"))
 
     info
   }
