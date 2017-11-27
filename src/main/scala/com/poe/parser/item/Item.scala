@@ -8,7 +8,7 @@ abstract class Item(knownInfo: KnownInfo) {
 
   }
   val rarity: Rarity = knownInfo.rarity
-  val base: String = knownInfo.base
+  val base: String = knownInfo.typeLine
   val name: Option[String] = knownInfo.name
   val id: Option[String] = knownInfo.id
   val ownerInfo: Option[OwnerInfo] = knownInfo.ownerInfo

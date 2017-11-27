@@ -1,6 +1,6 @@
 package com.poe.parser
 
-import com.poe.constants.{Clipboard, Rarity}
+import com.poe.constants.{Clipboard, Rarity, RarityFactory}
 
 object ClipboardParser {
   def parseKnownInfo(clipboard: String): Option[KnownInfo] = {
@@ -9,13 +9,13 @@ object ClipboardParser {
     }
 
     val rarity = parseRarity(clipboard)
-    val base = parseBase(clipboard)
+    val typeLine = parseTypeLine(clipboard)
     val name = parseName(clipboard)
     val itemLevel = parseItemLevel(clipboard)
     val identified = parseIdentified(clipboard)
     val quality = parseQuality(clipboard)
 
-    val knownInfo = new KnownInfo(base, rarity)
+    val knownInfo = new KnownInfo(typeLine, rarity)
 
     knownInfo.name = name
     knownInfo.itemLevel = itemLevel
@@ -41,16 +41,15 @@ object ClipboardParser {
     val spaceIndex = clipboard.indexOf(' ')
     val newLineIndex = clipboard.indexOf('\n')
     val rarityString = clipboard.substring(spaceIndex + 1, newLineIndex)
-    Rarity.getByKey()
-    val rarityOptional = Rarity.getByString(rarityString)
-    if (rarityOptional.isPresent) {
-      rarityOptional.get()
+    val rarityOptional: Option[Rarity] = RarityFactory.getByString(rarityString)
+    if (rarityOptional.isDefined) {
+      rarityOptional.get
     } else {
       throw new IllegalArgumentException("rarity couldn't be parsed")
     }
   }
 
-  private def parseBase(clipboard: String): String = {
+  private def parseTypeLine(clipboard: String): String = {
     val lines: Array[String] = clipboard.split('\n')
     var baseLineIndex = 1
     if (hasName(clipboard)) {
@@ -150,7 +149,7 @@ object ClipboardParser {
   }
 
   private def getSections(clipboard: String): Seq[String] = {
-    clipboard.split(Clipboard.Divider)
+    clipboard.split(Clipboard.Divider).map((section: String) => section.trim)
   }
 
   private def findSectionIndex(sections: Seq[String], needle: String): Int = {

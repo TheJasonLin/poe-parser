@@ -8,7 +8,7 @@ import com.poe.parser.item.equipment.EquipmentFactory
 object ItemFactory {
   def create(knownInfo: KnownInfo): Item = {
     implicit
-    val baseWords = knownInfo.base.split(' ')
+    val baseWords = knownInfo.typeLine.split(' ')
     if (knownInfo.rarity == Rarity.GEM && knownInfo.quality.isDefined) {
       return new Gem(knownInfo)
     } else if (knownInfo.rarity == Rarity.DIVINATION_CARD) {

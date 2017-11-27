@@ -6,7 +6,7 @@ import com.poe.parser.item.equipment.Equipment
 
 object ArmourFactory {
   def create(knownInfo: KnownInfo): Option[Equipment] = {
-    val base = knownInfo.base
+    val base = knownInfo.typeLine
     if(Item.matchesIdentifier(base, Helmet.identifiers)) {
       return Option(new Helmet(knownInfo))
     }

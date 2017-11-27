@@ -5,7 +5,7 @@ import com.poe.parser.item.Item
 
 object WeaponFactory {
   def create(knownInfo: KnownInfo): Option[Weapon] = {
-    val base = knownInfo.base
+    val base = knownInfo.typeLine
     if (base.contains("Bow")) {
       return Option(new Bow(knownInfo))
     }

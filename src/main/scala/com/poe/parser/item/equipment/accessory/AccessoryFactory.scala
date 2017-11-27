@@ -4,7 +4,7 @@ import com.poe.parser.KnownInfo
 
 object AccessoryFactory {
   def create(knownInfo: KnownInfo): Option[Accessory] = {
-    val baseWords: Seq[String] = knownInfo.base.split(' ')
+    val baseWords: Seq[String] = knownInfo.typeLine.split(' ')
     if (baseWords.contains("Amulet")) {
       return Option(new Amulet(knownInfo))
     } else if(baseWords.contains("Talisman")) {
