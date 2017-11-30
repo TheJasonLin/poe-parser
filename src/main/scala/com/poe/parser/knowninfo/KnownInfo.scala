@@ -1,7 +1,7 @@
-package com.poe.parser
+package com.poe.parser.knowninfo
 
 import com.poe.constants.Rarity
-import com.poe.parser.item.OwnerInfo
+import com.poe.parser.item.{OwnerInfo, StackSize}
 
 
 /**
@@ -15,13 +15,15 @@ class KnownInfo (var typeLine: String, var rarity: Rarity) {
   var itemLevel: Option[Int] = None
   var identified: Option[Boolean] = None
   var quality: Option[Int] = None
-  var mapTier: Option[Int] = None
+  var mapInfo: Option[MapInfo] = None
   var talismanTier: Option[Int] = None
   var implicits: Option[Seq[String]] = None
   var explicits: Option[Seq[String]] = None
   var ownerInfo: Option[OwnerInfo] = None
   var positionX: Option[Int] = None
   var positionY: Option[Int] = None
+  var stackSize: Option[StackSize] = None
+  var corrupted: Boolean = false
 
   def isMap: Boolean = {
     typeLine.contains("Map")

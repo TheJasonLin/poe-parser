@@ -5,6 +5,7 @@ import com.poe.parser.item._
 import com.poe.parser.item.currency.CurrencyFactory
 import com.poe.parser.item.equipment.EquipmentFactory
 import com.poe.parser.item.equipment.accessory.Talisman
+import com.poe.parser.knowninfo.KnownInfo
 
 object ItemFactory {
   def create(knownInfo: KnownInfo): Item = {
@@ -14,7 +15,7 @@ object ItemFactory {
       return new Gem(knownInfo)
     } else if (knownInfo.rarity == Rarity.DIVINATION_CARD) {
       return new DivinationCard(knownInfo)
-    } else if (knownInfo.mapTier.isDefined) {
+    } else if (knownInfo.isMap) {
         return new MapItem(knownInfo)
     } else if (knownInfo.talismanTier.isDefined) {
       return new Talisman(knownInfo)

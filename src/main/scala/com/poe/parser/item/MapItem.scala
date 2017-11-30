@@ -1,11 +1,15 @@
 package com.poe.parser.item
 
-import com.poe.parser.KnownInfo
+import com.poe.parser.knowninfo.KnownInfo
 
 class MapItem(
                knownInfo: KnownInfo
              ) extends CraftableItem(knownInfo) {
-  val tier: Int = knownInfo.mapTier.get
+  private val mapInfo = knownInfo.mapInfo.get
+  val tier: Int = mapInfo.tier
+  val itemQuantity: Int = mapInfo.itemQuantity
+  val itemRarity: Int = mapInfo.itemRarity
+  val packSize: Int = mapInfo.packSize
 
   override def toString: String = super.toString() + s"[Tier: $tier]"
 

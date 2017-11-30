@@ -1,6 +1,7 @@
 package com.poe.parser
 
 import com.poe.constants.Rarity
+import com.poe.parser.knowninfo.{KnownInfo, MapInfo}
 import org.scalatest.{FlatSpec, Matchers}
 
 class ClipboardParserSpec extends FlatSpec with Matchers {
@@ -16,12 +17,14 @@ class ClipboardParserSpec extends FlatSpec with Matchers {
     assert(knownInfo.name.isEmpty)
     assert(knownInfo.itemLevel.contains(78))
     assert(knownInfo.identified.contains(true))
-    assert(knownInfo.quality.contains(0))
-    assert(knownInfo.mapTier.contains(3))
+    assert(knownInfo.quality.isEmpty)
+    val expectedMapInfo = MapInfo(3, 0, 0, 0)
+    assert(knownInfo.mapInfo.contains(expectedMapInfo))
     assert(knownInfo.talismanTier.isEmpty)
     assert(knownInfo.implicits.isEmpty)
     assert(knownInfo.explicits.isEmpty)
     assert(knownInfo.ownerInfo.isEmpty)
+    assert(!knownInfo.corrupted)
   }
 
   "parseKnownInfo" should "parse magic map" in {
@@ -41,12 +44,14 @@ class ClipboardParserSpec extends FlatSpec with Matchers {
     assert(knownInfo.name.isEmpty)
     assert(knownInfo.itemLevel.contains(69))
     assert(knownInfo.identified.contains(true))
-    assert(knownInfo.quality.contains(0))
-    assert(knownInfo.mapTier.contains(2))
+    assert(knownInfo.quality.isEmpty)
+    val expectedMapInfo = MapInfo(2, 28, 14, 10)
+    assert(knownInfo.mapInfo.contains(expectedMapInfo))
     assert(knownInfo.talismanTier.isEmpty)
     assert(knownInfo.implicits.isEmpty)
     assert(knownInfo.explicits == expectedExplicits)
     assert(knownInfo.ownerInfo.isEmpty)
+    assert(!knownInfo.corrupted)
   }
 
   "parseKnownInfo" should "parse rare map" in {
@@ -71,10 +76,33 @@ class ClipboardParserSpec extends FlatSpec with Matchers {
     assert(knownInfo.itemLevel.contains(81))
     assert(knownInfo.identified.contains(true))
     assert(knownInfo.quality.contains(5))
-    assert(knownInfo.mapTier.contains(10))
+    val expectedMapInfo = MapInfo(10, 75, 36, 24)
+    assert(knownInfo.mapInfo.contains(expectedMapInfo))
     assert(knownInfo.talismanTier.isEmpty)
     assert(knownInfo.implicits.isEmpty)
     assert(knownInfo.explicits == expectedExplicits)
     assert(knownInfo.ownerInfo.isEmpty)
+    assert(!knownInfo.corrupted)
+  }
+
+  "parseKnownInfo" should "parse corrupted map" in {
+    val clipboard: String = "Rarity: Rare\nRapture Caress\nEmbroidered Gloves\n--------\nQuality: +8% (augmented)\nEnergy Shield: 55 (augmented)\n--------\nRequirements:\nLevel: 36\nInt: 54\n--------\nSockets: W-W B \n--------\nItem Level: 42\n--------\nTrigger Word of Flames on Hit\n--------\n1 Life Regenerated per second\n+15 to maximum Mana\n11% increased Energy Shield\n+22 to maximum Energy Shield\n+20% to Cold Resistance\n+26% to Lightning Resistance\n--------\nCorrupted"
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+    val knownInfo = knownInfoOption.get
+    assert(knownInfo.corrupted)
+  }
+
+  "parseKnownInfo" should "parse Stack of Chromatic Orb" in {
+    val clipboard: String = "Rarity: Currency\nChromatic Orb\n--------\nStack Size: 15/20\n--------\nReforges the colour of sockets on an item\n--------\nRight click this item then left click a socketed item to apply it.\nShift click to unstack."
+
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+    val knownInfo = knownInfoOption.get
+
+    assert(knownInfo.stackSize.isDefined)
+    val stackSize = knownInfo.stackSize.get
+    assert(stackSize.size == 15)
+    assert(stackSize.max == 20)
   }
 }
