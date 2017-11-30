@@ -1,9 +1,9 @@
 package com.poe.parser.item.equipment
 
-import com.poe.parser.KnownInfo
 import com.poe.parser.item.equipment.accessory.AccessoryFactory
 import com.poe.parser.item.equipment.armour.ArmourFactory
 import com.poe.parser.item.equipment.weapon.WeaponFactory
+import com.poe.parser.knowninfo.KnownInfo
 
 object EquipmentFactory {
   def create(knownInfo: KnownInfo): Option[Equipment] = {

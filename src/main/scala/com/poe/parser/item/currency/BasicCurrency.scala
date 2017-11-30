@@ -1,6 +1,6 @@
 package com.poe.parser.item.currency
 
-import com.poe.parser.KnownInfo
+import com.poe.parser.knowninfo.KnownInfo
 
 class BasicCurrency(
                      knownInfo: KnownInfo

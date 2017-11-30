@@ -1,7 +1,7 @@
 package com.poe.parser.item.equipment.weapon
 
-import com.poe.parser.KnownInfo
 import com.poe.parser.item.DBItem
+import com.poe.parser.knowninfo.KnownInfo
 
 class Sword(
              knownInfo: KnownInfo,

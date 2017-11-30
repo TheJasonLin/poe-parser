@@ -1,7 +1,7 @@
 package com.poe.parser.item.equipment
 
-import com.poe.parser.KnownInfo
 import com.poe.parser.item.CraftableItem
+import com.poe.parser.knowninfo.KnownInfo
 
 class Equipment(
                knownInfo: KnownInfo

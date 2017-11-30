@@ -4,6 +4,7 @@ import com.poe.constants.Rarity
 import com.poe.parser.item.{Item, OwnerInfo}
 import com.poe.parser.item.equipment.accessory.Ring
 import com.poe.parser.item.equipment.weapon.Dagger
+import com.poe.parser.knowninfo.KnownInfo
 import org.scalatest.{FlatSpec, Matchers}
 
 class ItemFactorySpec extends FlatSpec with Matchers {

@@ -1,10 +1,14 @@
 name := "poe-parser"
 
-version := "0.0.5"
+version := "0.1.1"
 
 scalaVersion := "2.11.8"
 
 resolvers += "Lcl" at  "file:///C:/Users/j/.ivy2/local/default"
+
+// https://github.com/typesafehub/scala-logging
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
 
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.1"
 

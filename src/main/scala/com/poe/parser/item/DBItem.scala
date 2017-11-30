@@ -1,7 +1,7 @@
 package com.poe.parser.item
 
 import com.poe.constants.Rarity
-import com.poe.parser.KnownInfo
+import com.poe.parser.knowninfo.KnownInfo
 import org.mongodb.scala.bson.ObjectId
 
 case class DBItem(

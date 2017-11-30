@@ -1,6 +1,6 @@
 package com.poe.parser.item.equipment.weapon
 
-import com.poe.parser.KnownInfo
+import com.poe.parser.knowninfo.KnownInfo
 
 class Staff(
              knownInfo: KnownInfo

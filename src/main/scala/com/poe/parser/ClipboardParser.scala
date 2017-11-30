@@ -1,8 +1,12 @@
 package com.poe.parser
 
 import com.poe.constants.{Clipboard, Rarity, RarityFactory}
+import com.poe.parser.item.StackSize
+import com.poe.parser.knowninfo.{KnownInfo, MapInfo}
+import com.typesafe.scalalogging.Logger
 
 object ClipboardParser {
+  val log = Logger("ClipboardParser")
   def parseKnownInfo(clipboard: String): Option[KnownInfo] = {
     if (!isValid(clipboard)) {
       return None
@@ -13,21 +17,26 @@ object ClipboardParser {
     val name = parseName(clipboard)
     val itemLevel = parseItemLevel(clipboard)
     val identified = parseIdentified(clipboard)
-    val quality = parseQuality(clipboard)
+    val quality = parsePercentageAttribute(clipboard, "Quality")
 
     val knownInfo = new KnownInfo(typeLine, rarity)
 
     knownInfo.name = name
     knownInfo.itemLevel = itemLevel
     knownInfo.identified = Option(identified)
-    knownInfo.quality = Option(quality)
-    if (knownInfo.isMap) {
-      knownInfo.mapTier = parseMapTier(clipboard)
-    }
+    knownInfo.quality = quality
     if (knownInfo.isTalisman) {
       knownInfo.talismanTier = parseTalismanTier(clipboard)
     }
     setMods(clipboard, knownInfo)
+
+    // from now on, use sections
+    val sections: Seq[String] = getSections(clipboard)
+    knownInfo.stackSize = parseStackSize(sections)
+    knownInfo.corrupted = isCorrupted(sections)
+    if (knownInfo.isMap) {
+      knownInfo.mapInfo = parseMapInfo(sections)
+    }
 
     Option(knownInfo)
   }
@@ -67,29 +76,7 @@ object ClipboardParser {
   }
 
   private def parseItemLevel(clipboard: String): Option[Int] = {
-    parseNumericAttribute(clipboard, "Item Level: ")
-  }
-
-  /**
-    * Parses the quality. Defaults to 0 if not found.
-    * @param clipboard
-    * @return
-    */
-  private def parseQuality(clipboard: String): Int = {
-    val label = "Quality: +"
-    val labelIndex: Int = clipboard.indexOf(label)
-    if(labelIndex < 0) {
-      0
-    } else {
-      val valueIndex: Int = labelIndex + label.length
-      val endIndex: Int = clipboard.indexOf("%", valueIndex)
-      if(endIndex < 0) {
-        0
-      } else {
-        val qualityString = clipboard.substring(valueIndex, endIndex)
-        Integer.parseInt(qualityString)
-      }
-    }
+    parseNumericAttribute(clipboard, "Item Level")
   }
 
   private def hasName(clipboard: String): Boolean = {
@@ -97,22 +84,74 @@ object ClipboardParser {
     lines(2) != Clipboard.Divider
   }
 
+  private def parseMapInfo(sections: Seq[String]): Option[MapInfo] = {
+    val sectionIndex = findSectionIndex(sections, "Map Tier: ")
+    if (sectionIndex < 0) {
+      None
+    }
 
-  private def parseMapTier(clipboard: String): Option[Int] = {
-    parseNumericAttribute(clipboard, "Map Tier: ")
+    val section = sections(sectionIndex)
+    val tier = parseNumericAttribute(section, "Map Tier")
+    if (tier.isEmpty) None
+
+    val itemQuantity = parsePercentageAttribute(section, "Item Quantity")
+    val itemRarity = parsePercentageAttribute(section, "Item Rarity")
+    val packSize = parsePercentageAttribute(section, "Monster Pack Size")
+
+    Option(MapInfo(tier.get, itemQuantity.getOrElse(0), itemRarity.getOrElse(0), packSize.getOrElse(0)))
   }
 
-  private def parseNumericAttribute(clipboard: String, label: String): Option[Int] = {
-    val labelStartIndex = clipboard.indexOf(label)
+  private def getLabelValue(searchText: String, label: String): Option[String] = {
+    val fullLabel = label + ": "
+    val labelStartIndex = searchText.indexOf(fullLabel)
     if(labelStartIndex < 0) {
       None
     } else {
-      val labelLength = label.length()
+      val labelLength = fullLabel.length()
       val valueStartIndex = labelStartIndex + labelLength
-      val valueEndIndex = clipboard.indexOf('\n', valueStartIndex)
-      val valueText: String = clipboard.substring(valueStartIndex, valueEndIndex)
-      val value = Integer.parseInt(valueText)
-      Option(value)
+      var valueEndIndex = searchText.indexOf('\n', valueStartIndex)
+      if (valueEndIndex < 0) {
+        valueEndIndex = searchText.length
+      }
+      val valueString = searchText.substring(valueStartIndex, valueEndIndex)
+      Option(valueString)
+    }
+  }
+
+  private def parseNumericAttribute(searchText: String, label: String): Option[Int] = {
+    val valueStringOption = getLabelValue(searchText, label)
+    if (valueStringOption.isEmpty) {
+      return None
+    }
+    val value = Integer.parseInt(valueStringOption.get)
+    Option(value)
+  }
+
+  /**
+    *
+    * @param searchText
+    * @param label for example "Quality"
+    * @return
+    */
+  private def parsePercentageAttribute(searchText: String, label: String): Option[Int] = {
+    val valueStringOption = getLabelValue(searchText, label)
+    if (valueStringOption.isEmpty) {
+      return None
+    }
+    val valueString = valueStringOption.get
+    val signIndex: Int = 0
+    val valueIndex: Int = signIndex + 1
+    val endIndex: Int = valueString.indexOf("%", valueIndex)
+    if(endIndex < 0) {
+      None
+    } else {
+      val numberString = valueString.substring(valueIndex, endIndex)
+      val magnitude = Integer.parseInt(numberString)
+      if (valueString.indexOf(signIndex) == '-') {
+        Option(-1 * magnitude)
+      } else {
+        Option(magnitude)
+      }
     }
   }
 
@@ -121,7 +160,7 @@ object ClipboardParser {
   }
 
   private def parseTalismanTier(clipboard: String): Option[Int] = {
-    parseNumericAttribute(clipboard, "Talisman Tier: ")
+    parseNumericAttribute(clipboard, "Talisman Tier")
   }
 
   private def setMods(clipboard: String, knownInfo: KnownInfo) = {
@@ -159,5 +198,41 @@ object ClipboardParser {
       }
     }
     -1
+  }
+
+  private def parseStackSize(sections: Seq[String]): Option[StackSize] = {
+    val stackSizeLabel = "Stack Size: "
+    val matchingSections: Seq[String] = sections.filter((section: String) => {
+      val isLongEnough = section.length > stackSizeLabel.length
+      if (!isLongEnough) {
+        false
+      } else {
+        val hasLabel = section.substring(0, stackSizeLabel.length()) == stackSizeLabel
+        val hasDivider = section.contains("/")
+        hasLabel && hasDivider
+      }
+    })
+    val length = matchingSections.length
+    if (length != 1) {
+      if (length > 1) {
+        log.warn(s"found more than 1 stack size label: $length")
+      }
+      return None
+    }
+    val section = matchingSections.head
+    val content = section.substring(stackSizeLabel.length)
+    val valueStrings = content.split("/")
+
+    if (valueStrings.length != 2) {
+      log.warn(s"found more than 2 sections: $section")
+      return None
+    }
+    val size = Integer.parseInt(valueStrings(0))
+    val max = Integer.parseInt(valueStrings(1))
+    Option(StackSize(size, max))
+  }
+
+  private def isCorrupted(sections: Seq[String]): Boolean = {
+    sections.last.trim.equals("Corrupted")
   }
 }
