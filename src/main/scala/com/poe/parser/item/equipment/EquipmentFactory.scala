@@ -9,11 +9,11 @@ object EquipmentFactory {
   def create(knownInfo: KnownInfo): Option[Equipment] = {
     var equipmentOption: Option[Equipment] = None
 
-    if (knownInfo.typeLine.contains("Flask")) {
+    if (knownInfo.AssumeEquipment.isFlask) {
       return Option(new Flask(knownInfo))
     }
 
-    if (knownInfo.typeLine.contains("Jewel")) {
+    if (knownInfo.AssumeEquipment.isJewel) {
       return Option(new Jewel(knownInfo))
     }
 
