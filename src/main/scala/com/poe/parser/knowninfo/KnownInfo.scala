@@ -1,6 +1,7 @@
 package com.poe.parser.knowninfo
 
 import com.poe.constants.Rarity
+import com.poe.parser.item.currency.BasicCurrency
 import com.poe.parser.item.{OwnerInfo, StackSize}
 
 
@@ -25,15 +26,27 @@ class KnownInfo (var typeLine: String, var rarity: Rarity) {
   var stackSize: Option[StackSize] = None
   var corrupted: Boolean = false
 
-  def isMap: Boolean = {
-    typeLine.contains("Map")
+  /**
+    * This cluster of checks can safely be used as soon as the KnownInfo is created,
+    * because they only rely on typeLine and rarity
+    */
+  def isGem: Boolean = rarity == Rarity.GEM
+  def isDivinationCard: Boolean = rarity == Rarity.DIVINATION_CARD
+  def isMap: Boolean = typeLine.contains("Map")
+  def isTalisman: Boolean = typeLine.contains("Talisman")
+  def isLeaguestone: Boolean = typeLine.contains("Leaguestone")
+  def isEssence: Boolean = typeLine.contains("Essence")
+  def isBasicCurrency: Boolean = BasicCurrency.identifiers.indexOf(typeLine) >= 0
+
+  /**
+    * These methods should only be called after validating that the item is an equipment
+    */
+  object AssumeEquipment {
+    def isFlask: Boolean = typeLine.contains("Flask")
+    def isJewel: Boolean = typeLine.contains("Jewel")
   }
 
-  def isTalisman: Boolean = {
-    typeLine.contains("Talisman")
-  }
-
-  def isLeaguestone: Boolean = {
-    typeLine.contains("Leaguestone")
-  }
+  /**
+    * This cluser of checks infer information assuming that everything is populated to the best
+    */
 }
