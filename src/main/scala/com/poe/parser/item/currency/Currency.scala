@@ -6,5 +6,5 @@ import com.poe.parser.knowninfo.KnownInfo
 class Currency(
                 knownInfo: KnownInfo
               ) extends Item(knownInfo) {
-  val stackSize: Option[StackSize] = knownInfo.stackSize
+  var stackSize: Option[StackSize] = knownInfo.stackSize
 }

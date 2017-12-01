@@ -6,6 +6,7 @@ abstract class CraftableItem(
                               knownInfo: KnownInfo
                             ) extends Item(knownInfo) {
   val identified: Boolean = knownInfo.identified.get
+  val corrupted: Boolean = knownInfo.corrupted
   val quality: Option[Int] = knownInfo.quality
 
   val implicits: Seq[Mod] = if (knownInfo.implicits.isDefined) parseMods(knownInfo.implicits.get) else Seq.empty[Mod]
