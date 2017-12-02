@@ -28,15 +28,15 @@ object ClipboardParser {
     if (knownInfo.isTalisman) {
       knownInfo.talismanTier = parseTalismanTier(clipboard)
     }
-    setMods(clipboard, knownInfo)
 
     // from now on, use sections
     val sections: Seq[String] = getSections(clipboard)
     knownInfo.stackSize = parseStackSize(sections)
     knownInfo.corrupted = isCorrupted(sections)
-    if (knownInfo.isMap) {
-      knownInfo.mapInfo = parseMapInfo(sections)
-    }
+    if (knownInfo.isMap) knownInfo.mapInfo = parseMapInfo(sections)
+
+    // set mods last so that we have maximum info to work with
+    setMods(sections, knownInfo)
 
     Option(knownInfo)
   }
@@ -163,13 +163,82 @@ object ClipboardParser {
     parseNumericAttribute(clipboard, "Talisman Tier")
   }
 
-  private def setMods(clipboard: String, knownInfo: KnownInfo) = {
-    val sections = getSections(clipboard)
-
-    if (knownInfo.isMap) {
-      setMapMods(sections, knownInfo)
+  /**
+    * This should be called after everything else is populated so we have maximum amounts
+    * of information to work with
+    * @param sections
+    * @param knownInfo
+    * @return
+    */
+  private def setMods(sections: Seq[String], knownInfo: KnownInfo): Unit = {
+    if (
+      knownInfo.isGem ||
+      knownInfo.isDivinationCard ||
+      knownInfo.isLeaguestone ||
+      knownInfo.isEssence ||
+      knownInfo.isBasicCurrency
+    ) {
+      // do nothing
+      return
+    }
+    // assume it's equipment and parse mods
+    val trimmedSections = removeNonModSectionsBelowItemLevel(sections, knownInfo)
+    // assume mods are immediately below item level
+    val itemLevelSectionIndex = getItemLevelSectionIndex(trimmedSections)
+    val sectionsAfterItemLevel = trimmedSections.length - itemLevelSectionIndex - 1
+    if (itemLevelSectionIndex < 0 || sectionsAfterItemLevel < 1) {
+      // no mods to be found
+      return
+    }
+    if (knownInfo.rarity == Rarity.NORMAL) {
+      // only implicit
+      knownInfo.implicits = Option(sectionToModStrings(trimmedSections.last))
+      return
+    }
+    // only magic / rare / unique, which we assume always have explicits
+    if (sectionsAfterItemLevel == 1) {
+      // must be explicits
+      knownInfo.explicits = Option(sectionToModStrings(trimmedSections.last))
+    } else if (sectionsAfterItemLevel == 2) {
+      knownInfo.implicits = Option(sectionToModStrings(trimmedSections(itemLevelSectionIndex + 1)))
+      knownInfo.explicits = Option(sectionToModStrings(trimmedSections.last))
+    } else {
+      throw new IllegalArgumentException("item has too many sections after item level to reliably parse mods")
     }
   }
+
+  private def sectionToModStrings(section: String): Seq[String] = {
+    section.split("\\n")
+  }
+
+  /**
+    * some items have instructions / flavor text / corrupted that make it hard to parse mods
+    * removing everything below the mods makes it easier to discern implicits from explicits
+    */
+  private def removeNonModSectionsBelowItemLevel(sections: Seq[String], knownInfo: KnownInfo): Seq[String] = {
+    var newSections = sections
+    if (knownInfo.corrupted) {
+      newSections = newSections.dropRight(1)
+    }
+    if (
+      knownInfo.isMap ||
+      knownInfo.AssumeEquipment.isFlask ||
+      knownInfo.AssumeEquipment.isJewel
+    ) {
+      newSections = newSections.dropRight(1)
+    }
+    if (knownInfo.rarity == Rarity.UNIQUE) {
+      // assume that uniques always have flavor text at the end
+      newSections = newSections.dropRight(1)
+    }
+    if (knownInfo.isTalisman) {
+      // remove talisman tier, because it comes after item level
+      newSections = newSections.filter((section) => !section.contains("Talisman Tier: "))
+    }
+    newSections
+  }
+
+  private def getItemLevelSectionIndex(sections: Seq[String]) = findSectionIndex(sections, "Item Level: ")
 
   private def setMapMods(sections: Seq[String], knownInfo: KnownInfo): Unit = {
     val itemLevelSectionIndex = findSectionIndex(sections, "Item Level: ")

@@ -1,6 +1,5 @@
 package com.poe.parser
 
-import com.poe.constants.Rarity
 import com.poe.parser.item._
 import com.poe.parser.item.currency.CurrencyFactory
 import com.poe.parser.item.equipment.EquipmentFactory
@@ -11,15 +10,15 @@ object ItemFactory {
   def create(knownInfo: KnownInfo): Item = {
     implicit
     val typeLineWords = knownInfo.typeLine.split(' ')
-    if (knownInfo.rarity == Rarity.GEM) {
+    if (knownInfo.isGem) {
       return new Gem(knownInfo)
-    } else if (knownInfo.rarity == Rarity.DIVINATION_CARD) {
+    } else if (knownInfo.isDivinationCard) {
       return new DivinationCard(knownInfo)
     } else if (knownInfo.isMap) {
         return new MapItem(knownInfo)
-    } else if (knownInfo.talismanTier.isDefined) {
+    } else if (knownInfo.isTalisman) {
       return new Talisman(knownInfo)
-    } else if (typeLineWords.contains("Leaguestone")) {
+    } else if (knownInfo.isLeaguestone) {
       return new Leaguestone(knownInfo)
     }
 
@@ -43,5 +42,14 @@ object ItemFactory {
       throw new IllegalArgumentException("couldn't parse KnownInfo from clipboard: " + clipboard)
     }
     create(knownInfo.get)
+  }
+
+  def createFromChangeJSON(changeJSON: String): Seq[Item] = {
+    val knownInfosOption: Option[Seq[KnownInfo]] = ChangeParser.parseChangeJSON(changeJSON)
+    if (knownInfosOption.isEmpty) {
+      throw new IllegalArgumentException("couldn't parse Change JSON: " + changeJSON)
+    }
+    val items: Seq[Item] = knownInfosOption.get.map((knownInfo) => create(knownInfo))
+    items
   }
 }
