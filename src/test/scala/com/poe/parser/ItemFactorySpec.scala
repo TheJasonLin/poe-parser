@@ -76,7 +76,7 @@ class ItemFactorySpec extends FlatSpec with Matchers {
         "43% increased Spell Damage"
       )
     )
-    info.ownerInfo = Option(new OwnerInfo("foxlin", "SparkTrain", "~b/o 30 chaos", "$$"))
+    info.ownerInfo = Option(new OwnerInfo("foxlin", "SparkTrain", "~b/o 30 chaos", "$$", "Standard"))
 
     info
   }
