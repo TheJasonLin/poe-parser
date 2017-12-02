@@ -43,4 +43,13 @@ object ItemFactory {
     }
     create(knownInfo.get)
   }
+
+  def createFromChangeJSON(changeJSON: String): Seq[Item] = {
+    val knownInfosOption: Option[Seq[KnownInfo]] = ChangeParser.parseChangeJSON(changeJSON)
+    if (knownInfosOption.isEmpty) {
+      throw new IllegalArgumentException("couldn't parse Change JSON: " + changeJSON)
+    }
+    val items: Seq[Item] = knownInfosOption.get.map((knownInfo) => create(knownInfo))
+    items
+  }
 }
