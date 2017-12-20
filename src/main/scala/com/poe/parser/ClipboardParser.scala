@@ -123,8 +123,18 @@ object ClipboardParser {
     if (valueStringOption.isEmpty) {
       return None
     }
-    val value = Integer.parseInt(valueStringOption.get)
+    val cleanValueString = cleanNumericAttribute(valueStringOption.get)
+    val value = Integer.parseInt(cleanValueString)
     Option(value)
+  }
+
+  private def cleanNumericAttribute(dirtyValue: String): String = {
+    var cleanValue = dirtyValue
+    if (dirtyValue.contains("(augmented)")) {
+      cleanValue = dirtyValue.replace("(augmented)", "")
+    }
+    cleanValue = cleanValue.trim()
+    cleanValue
   }
 
   /**

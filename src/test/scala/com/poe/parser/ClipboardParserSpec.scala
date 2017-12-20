@@ -93,6 +93,14 @@ class ClipboardParserSpec extends FlatSpec with Matchers {
     assert(knownInfo.corrupted)
   }
 
+  "parseKnownInfo" should "parse shaped map" in {
+    val clipboard: String = "Rarity: Normal\nShaped Lookout Map\n--------\nMap Tier: 6 (augmented)\n--------\nItem Level: 77\n--------\nTravel to this Map by using it in the Templar Laboratory or a personal Map Device. Maps can only be used once."
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+    val knownInfo = knownInfoOption.get
+    assert(knownInfo.mapInfo.get.tier == 6)
+  }
+
   "parseKnownInfo" should "parse Stack of Chromatic Orb" in {
     val clipboard: String = "Rarity: Currency\nChromatic Orb\n--------\nStack Size: 15/20\n--------\nReforges the colour of sockets on an item\n--------\nRight click this item then left click a socketed item to apply it.\nShift click to unstack."
 
