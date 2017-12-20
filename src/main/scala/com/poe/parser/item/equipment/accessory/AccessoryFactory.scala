@@ -11,7 +11,7 @@ object AccessoryFactory {
       return Option(new Talisman(knownInfo))
     } else if (typeLineWords.contains("Ring")) {
       return Option(new Ring(knownInfo))
-    } else if (typeLineWords.contains("Belt") || typeLineWords.contains("Sash")) {
+    } else if (typeLineWords.contains("Belt") || typeLineWords.contains("Sash") || typeLineWords.contains("Stygian Vise")) {
       return Option(new Belt(knownInfo))
     } else if (typeLineWords.contains("Quiver")) {
       return Option(new Quiver(knownInfo))
