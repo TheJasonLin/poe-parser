@@ -31,7 +31,8 @@ object Mace {
 
   val oneHandedIdentifiers = Array(
     "Club",
-    "Mace"
+    "Mace",
+    "Sceptre"
   )
 
   /**

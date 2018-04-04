@@ -20,7 +20,7 @@ object ArmourFactory {
     }
 
     if(Item.matchesIdentifier(typeLine, Shield.identifiers)) {
-      return Option(new Helmet(knownInfo))
+      return Option(new Shield(knownInfo))
     }
 
     if(Item.matchesIdentifier(typeLine, BodyArmour.identifiers) || BodyArmour.baseNames.contains(typeLine)) {

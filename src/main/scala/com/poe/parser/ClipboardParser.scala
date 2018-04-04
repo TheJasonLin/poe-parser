@@ -299,7 +299,17 @@ object ClipboardParser {
       return None
     }
     val section = matchingSections.head
-    val content = section.substring(stackSizeLabel.length)
+
+    // TODO replace with regex
+//    val pattern = (stackSizeLabel + "([0-9]+)/([0-9]+)([\na-zA-Z0-9:]*)").r
+//    val pattern(sizeString, maxString, _) =
+    var content = section.substring(stackSizeLabel.length)
+
+    // trim trailing lines
+    val newlineIndex = content.indexOf('\n')
+    if (newlineIndex != -1) {
+      content = content.substring(0, newlineIndex)
+    }
     val valueStrings = content.split("/")
 
     if (valueStrings.length != 2) {
@@ -308,6 +318,9 @@ object ClipboardParser {
     }
     val size = Integer.parseInt(valueStrings(0))
     val max = Integer.parseInt(valueStrings(1))
+
+//    val size = Integer.parseInt(sizeString)
+//    val max = Integer.parseInt(maxString)
     Option(StackSize(size, max))
   }
 

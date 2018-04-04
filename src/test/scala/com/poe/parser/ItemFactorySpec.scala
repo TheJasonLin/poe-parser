@@ -3,7 +3,8 @@ package com.poe.parser
 import com.poe.constants.Rarity
 import com.poe.parser.item.{Item, OwnerInfo}
 import com.poe.parser.item.equipment.accessory.Ring
-import com.poe.parser.item.equipment.weapon.Dagger
+import com.poe.parser.item.equipment.armour.Shield
+import com.poe.parser.item.equipment.weapon.{Dagger, Mace}
 import com.poe.parser.knowninfo.KnownInfo
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -31,6 +32,25 @@ class ItemFactorySpec extends FlatSpec with Matchers {
     assert(dagger.implicits.size == 1)
     assert(dagger.explicits.size == 6)
     assert(dagger.itemLevel == 78)
+  }
+
+  "create" should "create an unidentified Void Sceptre as a one handed weapon" in {
+    val clipboard: String = "Rarity: Rare\nVoid Sceptre\n--------\nOne Handed Mace\nPhysical Damage: 50-76\nCritical Strike Chance: 6.20%\nAttacks per Second: 1.25\nWeapon Range: 9\n--------\nRequirements:\nStr: 104\nInt: 122\n--------\nSockets: R-B-B \n--------\nItem Level: 74\n--------\n40% increased Elemental Damage\n--------\nUnidentified"
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+
+    val item = ItemFactory.create(knownInfoOption.get)
+    assert(item.isInstanceOf[Mace])
+    assert(item.asInstanceOf[Mace].oneHanded)
+  }
+
+  "create" should "create a Colassal Tower Shield as a shield" in {
+    val clipboard: String = "Rarity: Rare\nColossal Tower Shield\n--------\nChance to Block: 23%\nArmour: 632\n--------\nRequirements:\nStrength: 159\n--------\nSockets: R R \n--------\nItem Level: 74\n--------\n+13 to maximum Life\n--------\nUnidentified"
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+
+    val item = ItemFactory.create(knownInfoOption.get)
+    assert(item.isInstanceOf[Shield])
   }
 
   private def getGhoulTurnInfo: KnownInfo = {

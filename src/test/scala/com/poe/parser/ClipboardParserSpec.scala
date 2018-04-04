@@ -187,4 +187,24 @@ class ClipboardParserSpec extends FlatSpec with Matchers {
     assert(knownInfo.explicits.contains(expectedExplicits))
     assert(knownInfo.corrupted)
   }
+
+  "parseKnownInfo" should "parse unidentified Void Sceptre" in {
+    val clipboard: String = "Rarity: Rare\nVoid Sceptre\n--------\nOne Handed Mace\nPhysical Damage: 50-76\nCritical Strike Chance: 6.20%\nAttacks per Second: 1.25\nWeapon Range: 9\n--------\nRequirements:\nStr: 104\nInt: 122\n--------\nSockets: R-B-B \n--------\nItem Level: 74\n--------\n40% increased Elemental Damage\n--------\nUnidentified"
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+    val knownInfo = knownInfoOption.get
+
+    assert(knownInfo.typeLine.contains("Void Sceptre"))
+  }
+
+  "parseKnownInfo" should "parse Reinforced Steel Net" in {
+    val clipboard: String = "Rarity: Currency\nReinforced Steel Net\n--------\nStack Size: 87/100\nNet Tier: 8\n--------\nEffective against Beasts of levels 60 to 75.\nActivate to use this type of Net when capturing Beasts.\n--------\nShift click to unstack."
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+    val knownInfo = knownInfoOption.get
+
+    assert(knownInfo.stackSize.isDefined)
+    assert(knownInfo.stackSize.get.max == 100)
+    assert(knownInfo.stackSize.get.size == 87)
+  }
 }
