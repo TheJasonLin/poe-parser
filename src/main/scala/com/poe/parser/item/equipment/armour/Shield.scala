@@ -3,9 +3,19 @@ package com.poe.parser.item.equipment.armour
 import com.poe.parser.knowninfo.KnownInfo
 
 class Shield(
-              knownInfo: KnownInfo
+              knownInfo: KnownInfo,
+              val tallShield: Boolean,
+              val shortShield: Boolean
             ) extends Armour(knownInfo) {
-  override def height(): Int = 3
+  override def height(): Int = {
+    if (tallShield) {
+      4
+    } else if (shortShield) {
+      2
+    } else {
+      3
+    }
+  }
 }
 
 object Shield {
@@ -13,5 +23,16 @@ object Shield {
     "Shield",
     "Buckler",
     "Bundle"
+  )
+
+  val tallShieldIdentifiers = Array(
+    "Tower Shield"
+  )
+
+  val shortShieldIdentifiers = Array(
+    "Buckler",
+    "Spirit Shield",
+    "Spiked Shield",
+    "Spiked Bundle"
   )
 }

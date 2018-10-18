@@ -20,7 +20,9 @@ object ArmourFactory {
     }
 
     if(Item.matchesIdentifier(typeLine, Shield.identifiers)) {
-      return Option(new Shield(knownInfo))
+      val tallShield = Item.matchesIdentifier(typeLine, Shield.tallShieldIdentifiers)
+      val shortShield = Item.matchesIdentifier(typeLine, Shield.shortShieldIdentifiers)
+      return Option(new Shield(knownInfo, tallShield, shortShield))
     }
 
     if(Item.matchesIdentifier(typeLine, BodyArmour.identifiers) || BodyArmour.baseNames.contains(typeLine)) {
