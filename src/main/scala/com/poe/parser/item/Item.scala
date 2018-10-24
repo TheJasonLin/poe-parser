@@ -38,4 +38,8 @@ object Item {
       identifiers.contains(baseWord)
     })
   }
+
+  def containsIdentifier(typeLine: String, identifiers: Array[String]): Boolean = {
+    identifiers.exists(identifier => typeLine.contains(identifier))
+  }
 }

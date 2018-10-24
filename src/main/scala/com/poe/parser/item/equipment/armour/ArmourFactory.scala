@@ -20,8 +20,8 @@ object ArmourFactory {
     }
 
     if(Item.matchesIdentifier(typeLine, Shield.identifiers)) {
-      val tallShield = Item.matchesIdentifier(typeLine, Shield.tallShieldIdentifiers)
-      val shortShield = Item.matchesIdentifier(typeLine, Shield.shortShieldIdentifiers)
+      val tallShield = Item.containsIdentifier(typeLine, Shield.tallShieldIdentifiers)
+      val shortShield = Item.containsIdentifier(typeLine, Shield.shortShieldIdentifiers)
       return Option(new Shield(knownInfo, tallShield, shortShield))
     }
 

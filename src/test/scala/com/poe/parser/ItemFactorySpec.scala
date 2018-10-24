@@ -51,6 +51,17 @@ class ItemFactorySpec extends FlatSpec with Matchers {
 
     val item = ItemFactory.create(knownInfoOption.get)
     assert(item.isInstanceOf[Shield])
+    assert(item.height() == 4)
+  }
+
+  "create" should "create a Spirit Shield" in {
+    val clipboard: String = "Rarity: Rare\nSuperior Fossilised Spirit Shield\n--------\nQuality: +5% (augmented)\nChance to Block: 22%\nEnergy Shield: 49 (augmented)\n--------\nRequirements:\nIntelligence: 141\n--------\nSockets: B B \n--------\nItem Level: 74\n--------\n16% increased Spell Damage\n--------\nUnidentified"
+    val knownInfoOption: Option[KnownInfo] = ClipboardParser.parseKnownInfo(clipboard)
+    assert(knownInfoOption.isDefined)
+
+    val item = ItemFactory.create(knownInfoOption.get)
+    assert(item.isInstanceOf[Shield])
+    assert(item.height() == 2)
   }
 
   private def getGhoulTurnInfo: KnownInfo = {
